@@ -13,9 +13,15 @@ const fetcher = async (): Promise<Task[]> => {
 };
 
 export const TaskList: FC = () => {
-  const { data: tasks, isLoading } = useSWR<Task[]>("/tasks", fetcher);
+  const {
+    data: tasks,
+    isLoading,
+    isValidating,
+  } = useSWR<Task[]>("/tasks", fetcher, {
+    keepPreviousData: true,
+  });
 
-  if (isLoading || !tasks)
+  if ((isLoading && !isValidating) || !tasks)
     return (
       <Center my={10}>
         <Spinner size="lg" />
@@ -25,7 +31,7 @@ export const TaskList: FC = () => {
   return (
     <Stack my={4} gap={4}>
       {tasks.map((task) => (
-        <TaskItem task={task} />
+        <TaskItem task={task} key={task.id} />
       ))}
     </Stack>
   );

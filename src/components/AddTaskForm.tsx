@@ -13,6 +13,7 @@ export const AddTaskForm: FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (input === "") return;
     trigger(input);
     setInput("");
   };
