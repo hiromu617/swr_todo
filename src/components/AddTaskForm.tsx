@@ -1,7 +1,6 @@
 import { Flex, Input, Button } from "@chakra-ui/react";
 import { FC, FormEvent, useState, ChangeEvent } from "react";
 import { supabase } from "../client";
-import { Task } from "../types";
 import useSWRMutation from "swr/mutation";
 
 const addTask = async (_: string, { arg }: { arg: string }) => {
