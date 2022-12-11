@@ -1,24 +1,21 @@
 import { Flex, Input, Button } from "@chakra-ui/react";
 import { FC, FormEvent, useState, ChangeEvent } from "react";
 import { supabase } from "../client";
-import { useSWRConfig } from "swr";
+import { Task } from "../types";
+import useSWRMutation from "swr/mutation";
 
-const addTask = async (title: string) => {
-  await supabase.from("tasks").insert([{ title }]);
+const addTask = async (_: string, { arg }: { arg: string }) => {
+  await supabase.from("tasks").insert([{ title: arg }]);
 };
 
 export const AddTaskForm: FC = () => {
-  const { mutate } = useSWRConfig();
+  const { trigger, isMutating } = useSWRMutation("/tasks", addTask);
   const [input, setInput] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    await addTask(input);
-    setIsSubmitting(false);
+    trigger(input);
     setInput("");
-    mutate("/tasks");
   };
 
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +28,8 @@ export const AddTaskForm: FC = () => {
       <Button
         colorScheme="blue"
         type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting}
+        isLoading={isMutating}
+        disabled={isMutating}
       >
         追加する
       </Button>
