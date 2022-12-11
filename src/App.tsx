@@ -1,34 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import {
+  Container,
+  Center,
+  Heading,
+  Stack,
+  Card,
+  CardBody,
+  Text,
+  Checkbox,
+  IconButton,
+  Flex,
+  Input,
+  Button,
+} from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Center>
+      <Container maxW="xl" mt={10}>
+        <Heading mb={4}>Todo List</Heading>
+        <Flex gap={4}>
+          <Input placeholder="Task" />
+          <Button colorScheme="blue">追加する</Button>
+        </Flex>
+        <Stack my={4} gap={4}>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardBody
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                gap={4}
+              >
+                <Checkbox size="lg" />
+                <Text flex="1">
+                  View a summary of all your customers over the last month.
+                </Text>
+                <IconButton
+                  aria-label="Delete Task"
+                  size="sm"
+                  colorScheme="red"
+                  icon={<CloseIcon />}
+                />
+              </CardBody>
+            </Card>
+          ))}
+        </Stack>
+      </Container>
+    </Center>
+  );
 }
 
-export default App
+export default App;
