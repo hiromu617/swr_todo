@@ -6,25 +6,26 @@ import {
   Checkbox,
   IconButton,
 } from "@chakra-ui/react";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { supabase } from "../client";
+import { Task } from "../types";
+import useSWR from "swr";
+
+const fetcher = async (): Promise<Task[]> => {
+  const { data, error } = await supabase.from("tasks").select(`*`);
+  if (error) throw error;
+  if (data) return data;
+  return [];
+};
 
 export const TaskList: FC = () => {
-  useEffect(() => {
-    getTasks();
-  }, []);
+  const { data: tasks } = useSWR<Task[]>("/tasks", fetcher);
 
-  const getTasks = async () => {
-    const { data, error, status } = await supabase
-      .from("tasks")
-      .select(`*`);
-    console.log(data)
-  };
   return (
     <Stack my={4} gap={4}>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <Card key={i}>
+      {tasks?.map((task) => (
+        <Card key={task.id}>
           <CardBody
             display="flex"
             justifyContent="center"
@@ -32,9 +33,7 @@ export const TaskList: FC = () => {
             gap={4}
           >
             <Checkbox size="lg" />
-            <Text flex="1">
-              View a summary of all your customers over the last month.
-            </Text>
+            <Text flex="1">{task.title}</Text>
             <IconButton
               aria-label="Delete Task"
               size="sm"
