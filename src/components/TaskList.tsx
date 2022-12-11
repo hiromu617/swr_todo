@@ -5,6 +5,8 @@ import {
   Text,
   Checkbox,
   IconButton,
+  Spinner,
+  Center
 } from "@chakra-ui/react";
 import { FC } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
@@ -20,11 +22,18 @@ const fetcher = async (): Promise<Task[]> => {
 };
 
 export const TaskList: FC = () => {
-  const { data: tasks } = useSWR<Task[]>("/tasks", fetcher);
+  const { data: tasks, isLoading } = useSWR<Task[]>("/tasks", fetcher);
+
+  if (isLoading || !tasks)
+    return (
+      <Center my={10}>
+        <Spinner size="lg" />
+      </Center>
+    );
 
   return (
     <Stack my={4} gap={4}>
-      {tasks?.map((task) => (
+      {tasks.map((task) => (
         <Card key={task.id}>
           <CardBody
             display="flex"
