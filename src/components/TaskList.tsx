@@ -6,7 +6,10 @@ import useSWR from "swr";
 import { TaskItem } from "./TaskItem";
 
 const fetcher = async (): Promise<Task[]> => {
-  const { data, error } = await supabase.from("tasks").select(`*`);
+  const { data, error } = await supabase
+    .from("tasks")
+    .select(`*`)
+    .order("created_at", { ascending: false });
   if (error) throw error;
   if (data) return data;
   return [];
