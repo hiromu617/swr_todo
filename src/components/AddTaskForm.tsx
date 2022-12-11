@@ -1,4 +1,4 @@
-import { Flex, Input, Button } from "@chakra-ui/react";
+import { Flex, Input, Button, useToast } from "@chakra-ui/react";
 import { FC, FormEvent, useState, ChangeEvent } from "react";
 import { supabase } from "../client";
 import useSWRMutation from "swr/mutation";
@@ -8,7 +8,19 @@ const addTask = async (_: string, { arg }: { arg: string }) => {
 };
 
 export const AddTaskForm: FC = () => {
-  const { trigger, isMutating } = useSWRMutation("/tasks", addTask);
+  const toast = useToast();
+  const { trigger, isMutating } = useSWRMutation("/tasks", addTask, {
+    onSuccess: () =>
+      toast({
+        title: "タスクを追加しました",
+        status: "success",
+      }),
+    onError: () =>
+      toast({
+        title: "エラーが発生しました",
+        status: "error",
+      }),
+  });
   const [input, setInput] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {

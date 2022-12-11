@@ -1,4 +1,11 @@
-import { Card, CardBody, Text, Checkbox, IconButton } from "@chakra-ui/react";
+import {
+  Card,
+  CardBody,
+  Text,
+  Checkbox,
+  IconButton,
+  useToast,
+} from "@chakra-ui/react";
 import { FC } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { supabase } from "../client";
@@ -25,11 +32,26 @@ const updateTask = async (id: number, done: boolean) => {
 
 export const TaskItem: FC<Props> = ({ task }) => {
   const { mutate } = useSWRConfig();
+  const toast = useToast();
+
   const handleDeleteTask = async () => {
-    await mutate("/tasks", deleteTask(task.id), {
-      optimisticData: (tasks: Task[]) => tasks.filter((t) => t.id !== task.id),
-      revalidate: true,
-    });
+    try {
+      await mutate("/tasks", deleteTask(task.id), {
+        optimisticData: (tasks: Task[]) =>
+          tasks.filter((t) => t.id !== task.id),
+        revalidate: true,
+        throwOnError: true,
+      });
+      toast({
+        title: "タスクを削除しました",
+        status: "success",
+      });
+    } catch {
+      toast({
+        title: "エラーが発生しました",
+        status: "error",
+      });
+    }
   };
 
   const handleTaskUpdate = async () => {
